@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
-from azure.cosmos import CosmosClient
+from azure.cosmos import CosmosClient, PartitionKey, exceptions
 import os
 
 app = Flask(__name__)
@@ -27,10 +27,6 @@ def get_books():
 
     return jsonify(items)
 
-# @app.route('/', methods=['GET'])
-# def home():
-#     return "Hello, this is the home page!"
-
 @app.route('/add', methods=['POST'])
 @cross_origin()
 def add_book():
@@ -46,14 +42,15 @@ def add_book():
     database = client.get_database_client(database_name)
     container = database.get_container_client(container_name)
 
-    # リクエストからデータを取得
-    data = request.get_json()
+    # POSTリクエストの内容を取得
+    book = request.json
 
-    # 新しい本を追加
-    container.upsert_item(data)
-
-    return jsonify({"message": "Book added successfully"})
+    try:
+        # コンテナにドキュメントを追加
+        container.upsert_item(book)
+        return jsonify({"status": "success"})
+    except exceptions.CosmosHttpResponseError as e:
+        return jsonify({"status": "failed", "error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(port=5500)
-

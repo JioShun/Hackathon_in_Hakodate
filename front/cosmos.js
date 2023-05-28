@@ -16,40 +16,41 @@ window.onload = async function() {
   });
 }
 
-function showForm() {
+async function addBook() {
+  const titleInput = document.getElementById("title-input");
+  const kindInput = document.getElementById("kind-input");
+  const dateInput = document.getElementById("date-input");
+  const textInput = document.getElementById("text-input");
+
+  const response = await fetch('http://localhost:5500/add', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      title: titleInput.value,
+      kind: kindInput.value,
+      date: dateInput.value,
+      text: textInput.value
+    })
+  });
+
+  if (response.ok) {
+    titleInput.value = '';
+    kindInput.value = '';
+    dateInput.value = '';
+    textInput.value = '';
+    alert("Book added successfully!");
+  } else {
+    alert("Failed to add book!");
+  }
+}
+
+function toggleForm() {
   var formContainer = document.getElementById("form-container");
   if (formContainer.style.display === "none") {
       formContainer.style.display = "block";
   } else {
       formContainer.style.display = "none";
   }
-}
-
-async function addBook(event) {
-  event.preventDefault();
-
-  const titleInput = document.getElementById('title-input');
-  const kindInput = document.getElementById('kind-input');
-  const dateInput = document.getElementById('date-input');
-  const textInput = document.getElementById('text-input');
-
-  const newBook = {
-    title: titleInput.value,
-    kind: kindInput.value,
-    date: dateInput.value,
-    text: textInput.value
-  };
-
-  await fetch('http://localhost:5500/add', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(newBook)
-  });
-
-  titleInput.value = '';
-  kindInput.value = '';
-  dateInput.value = '';
-  textInput.value = '';
 }

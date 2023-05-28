@@ -7,8 +7,8 @@
   <script src="cosmos.js"></script>
 </head>
 <body>
-  <div class="form-container" id="form-container" style="display: none;">
-    <form id="add-book-form" onsubmit="addBook(event)">
+  <div class="form-container" id="form-container">
+    <form id="add-book-form" onsubmit="event.preventDefault(); addBook();">
       <input type="text" id="title-input" placeholder="タイトル" required>
       <input type="text" id="kind-input" placeholder="優しさ" required>
       <input type="date" id="date-input" required>
@@ -17,7 +17,7 @@
     </form>
   </div>
 
-  <button id="add-button" onclick="showForm()">＋</button>
+  <button id="add-button" onclick="toggleForm()">＋</button>
   
   <div id="books-container"></div>
 </body>
